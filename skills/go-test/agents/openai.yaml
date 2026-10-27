@@ -1,0 +1,4 @@
+interface:
+  display_name: "Go 单元测试"
+  short_description: "按照项目现有测试模式补充并运行本次 Go 代码改动测试"
+  default_prompt: "使用 $go-test 按当前项目已有测试模式覆盖本次 Go 改动。"

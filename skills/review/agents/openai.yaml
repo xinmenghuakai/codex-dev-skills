@@ -1,0 +1,4 @@
+interface:
+  display_name: "代码审查"
+  short_description: "审查完整代码改动中的数据、边界、并发、兼容性和测试风险"
+  default_prompt: "使用 $review 审查当前需求的完整改动，按风险等级完成全部审查 pass，一次性报告有证据的问题并输出 Review Gate。"

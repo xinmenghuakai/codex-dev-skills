@@ -1,0 +1,4 @@
+interface:
+  display_name: "API 接口文档交付"
+  short_description: "默认生成 Markdown，项目启用 YApi 时按配置交付接口"
+  default_prompt: "使用 $api-handoff 根据真实 Go 接口和项目平台配置生成并校验本次接口交付物。"

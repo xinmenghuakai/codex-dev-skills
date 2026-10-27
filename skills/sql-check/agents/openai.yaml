@@ -1,0 +1,4 @@
+interface:
+  display_name: "SQL 与 GORM 审查"
+  short_description: "核对查询安全、数据口径、真实索引、事务边界和性能证据"
+  default_prompt: "使用 $sql-check 审查本次 SQL 与 GORM 改动的数据正确性和性能。"

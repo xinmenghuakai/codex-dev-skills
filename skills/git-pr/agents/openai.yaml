@@ -1,0 +1,4 @@
+interface:
+  display_name: "Git 提交与发布"
+  short_description: "安全执行 push、测试合并、主分支发布和打 tag"
+  default_prompt: "使用 $git-pr 按我指定的模式提交、同步、合并并推送当前改动。"
