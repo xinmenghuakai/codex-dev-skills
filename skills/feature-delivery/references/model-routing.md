@@ -33,6 +33,18 @@
 
 `delivery_mode=simple_fix` 满足现有准入条件时，由当前主 Agent 使用当前会话模型和思考档位连续完成实现、必要补测、一次安全定向验证和短 diff 核对；不为匹配 L1 默认档位切换模型或固定派发 Implementer/Verifier。资格失效时升级交付模式并重新分级；只有明确能力缺口时才按专项职责委派。`feature_delivery_simple_implementer` 的现有配置保留，供用户明确指定时使用，不再作为小修复的默认路由。
 
+## Terra 页面与视觉任务（按需）
+
+有设计稿还原、布局/样式/响应式调整、图片裁切或截图对照需求，且存在独立视觉任务的明确收益或用户明确要求时，才使用下述角色；不因涉及前端就固定委派，不为换模型拆任务或升级交付模式。`targeted_fix/simple_fix` 默认仍由当前主 Agent 连续实现与验证；用户明确要求独立视觉验收时可只委派只读验收，不升级模式。
+
+- **页面实现**：`feature_delivery_ui_implementer` 使用 Terra/medium，仅接收 L2、已确认页面行为与接口契约下的 `whole/modular` 视觉实现。纯页面 `whole` 由它连续实现和必要验证；混合业务逻辑的 `whole` 继续由原 Sol/Astra 执行者负责，需要时只委派视觉验收。已有独立模块才按现有 `modular` 边界分工。不得修改鉴权、支付、业务状态、接口/持久化契约；发现这些问题回主 Agent 按原风险处理。
+- **视觉验收**：`feature_delivery_visual_verifier` 使用 Terra/medium，读取设计参考与实际页面/截图，检查约定视口及页面状态下的布局、间距、字体、裁切、溢出和响应式差异，只回传问题位置、截图证据及未覆盖/阻塞项；不修改业务或测试文件。没有实际页面/截图证据不能报告验收通过。浏览器操作仍先核对环境与副作用，不执行未经授权的提交、发送、上传或交易。
+- **任务输入**：复用当前模式已有任务包或小修复内联契约，只补设计稿/图片的精确引用、页面路由及代码基线、待验视口与状态、允许修改范围（实现）和本任务已有的证据目录。只读验收不要求实现来源、快照或新增 Gate 包；已有 plan 就引用对应项，无 plan 不补建。实现角色按现有 schema v2 回传真实写入来源；视觉验收只回传证据，不认领 implementation 文件。
+- **证据复用与独立性**：代码、资源、设计基线、视口/状态、依赖和环境均未变化时复用已有截图及结论，仅补缺失或失效项；用户明确要求重跑时除外。需要独立视觉验收时，使用不同于实现者的 Agent 实例（可以同为 Terra），不把实现者自检称为独立验收。视觉结论只覆盖实际观察范围，不替代功能验证或代码 Review。
+- **审查与发布**：视觉验收不是新增 Review 阶段或发布门槛。同批上线仍集中一次完整独立代码 Review，test/master 与跨窗口仍复用有效审查和材料；仅增加视觉任务或截图，不重建 provenance/snapshot/report/binding，不因换模型重跑有效业务验证。实际页面代码新增/变化仍按现有规则记录来源、核对风险并补审变化；正式 Gate 是否需要完全沿用原发布规则。
+
+两个角色默认固定 Terra/medium。复杂视觉任务若需要 high，先由主 Agent 明确能力缺口并核对真实执行配置；固定角色 TOML 锁定的档位不能用 spawn 参数或任务包覆盖。改用明确配置的 Terra/high 执行者时如实记录来源，不把它冒报为固定 medium 角色；不默认使用 max。
+
 ## 研发测试失败升级
 
 测试专家一轮后仍无法区分实现 bug、测试错误和环境问题时，由主 Agent 委派通用子 Agent 继续只读诊断，显式设置 `model=gpt-6-astra`、`reasoning_effort=medium`、`fork_turns=none`。任务只传入原范围、准确失败输出、已排除假设、相关代码位置和已审查的安全验证命令；不修改业务代码、测试、配置或外部状态，不扩大测试范围，不派生子 Agent。缺少必要权限或环境证据时报告具体阻塞，不能靠重试或更换模型绕过。
@@ -61,6 +73,8 @@
 | 架构设计 | `feature_delivery_architect` | Sol/xhigh | `L5` 架构、依赖和高风险边界 |
 | 简单实现 | 当前主 Agent | 当前会话模型 | `L1` 且满足 `simple_fix`；连续实现、验证和短 diff 核对 |
 | 常规实现 | `feature_delivery_implementer` | Sol/high | `L2` 需要委派时使用；当前主 Agent 能可靠完成时可连续实施，补测与验证按主文件 |
+| 页面视觉实现（按需） | `feature_delivery_ui_implementer` | Terra/medium | L2，已确认契约的页面视觉范围；不因前端自动委派 |
+| 截图/视觉验收（按需） | `feature_delivery_visual_verifier` | Terra/medium | 只读对照页面和设计参考，复用有效截图，不替代代码 Review |
 | 深度实现 | `feature_delivery_deep_implementer` | Sol/max | `L3`，契约必须已冻结 |
 | 关键实现 | `feature_delivery_critical_implementer` | Astra/medium | `L4` |
 | 测试设计/诊断 | `feature_delivery_test_specialist` | Sol/high | 复杂测试设计、新夹具或首次不明确失败归因；普通 L2 的现有测试补改由原执行者连续完成 |

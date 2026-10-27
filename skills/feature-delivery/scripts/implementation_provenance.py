@@ -21,7 +21,7 @@ from freeze_snapshot import (
 )
 
 
-# 模型来源排序保留 Terra 兼容解析；当前常规研发使用 Sol，高风险使用 Astra。
+# 常规研发使用 Sol，按需页面实现使用 Terra，高风险使用 Astra。
 # unknown 表示真实模型无法核验，不能据此宣称模型家族独立。
 FAMILY_ORDER = ("luna", "terra", "sol", "astra", "unknown")
 ENTRY_TYPES = ("implementation", "scope_contract")
@@ -30,6 +30,7 @@ AGENTS_DIR = Path(__file__).resolve().parents[3] / "agents"
 IMPLEMENTATION_AGENTS = (
     "feature_delivery_simple_implementer",
     "feature_delivery_implementer",
+    "feature_delivery_ui_implementer",
     "feature_delivery_deep_implementer",
     "feature_delivery_critical_implementer",
     "feature_delivery_test_specialist",

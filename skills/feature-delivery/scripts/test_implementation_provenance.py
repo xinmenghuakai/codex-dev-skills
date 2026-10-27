@@ -302,6 +302,40 @@ class ImplementationProvenanceTest(unittest.TestCase):
                     "critical-old", "feature_delivery_critical_implementer", model, ["a.go", "b.go"]
                 )])
 
+    def test_terra_ui_writer_keeps_existing_risk_review_route(self) -> None:
+        """Terra 写入进入既有来源校验，风险不因视觉角色而升级。"""
+        provenance = self.provenance("terra-ui.json", [self.entry(
+            "ui", "feature_delivery_ui_implementer", "gpt-6.1-terra/medium",
+            ["a.go", "b.go"],
+        )])
+        for risk, reviewer in (
+            ("normal", "feature_delivery_reviewer"),
+            ("high", "feature_delivery_sol_reviewer"),
+        ):
+            with self.subTest(risk=risk):
+                summary = validate_provenance(
+                    provenance, self.snapshot, ("M1.backend",), (), risk_level=risk,
+                )
+                self.assertEqual(summary.families, ("terra",))
+                self.assertEqual(summary.selected_reviewer, reviewer)
+                self.assertEqual(summary.review_independence, "independent")
+
+    def test_terra_ui_writer_rejects_false_model_or_effort(self) -> None:
+        for model in ("gpt-5.6-terra/medium", "gpt-6.1-terra/high", "gpt-6.1-sol/high"):
+            with self.subTest(model=model), self.assertRaisesRegex(
+                ProvenanceError, "does not match selected_agent",
+            ):
+                self.provenance("false-terra.json", [self.entry(
+                    "ui", "feature_delivery_ui_implementer", model, ["a.go", "b.go"],
+                )])
+
+    def test_visual_verifier_cannot_claim_implementation_files(self) -> None:
+        with self.assertRaisesRegex(ProvenanceError, "not approved for entry_type"):
+            self.provenance("visual-write.json", [self.entry(
+                "visual", "feature_delivery_visual_verifier", "gpt-6.1-terra/medium",
+                ["a.go", "b.go"],
+            )])
+
     def test_rejects_previous_sol_model_for_pinned_agent(self) -> None:
         """固定 Agent 升级后，旧型号来源不能冒充新型号证据。"""
         with self.assertRaisesRegex(ProvenanceError, "does not match selected_agent"):
